@@ -1,5 +1,3 @@
-library("igraph", lib.loc="~/R/i686-pc-linux-gnu-library/3.2")
-Graph <- setRefClass("Graph", fields = list(matrice = "matrix"))
 pre_set <- function() {
   print("Pre-set della matrice iniziale. ")
   n <- readline("Inserisci il numero di vertici della matrice: ")
@@ -78,6 +76,7 @@ start <- function() {
   }
 }
 
+
 check_fun <- function(read) {
   check <<- FALSE
   for (i in 0:9) {
@@ -109,163 +108,164 @@ controllo_lettere <- function(read) {
   return(verifica)
 } 
 
-pre_set()
-start()
-
-
-aggiungi_vertice <- function(a) {
-  x <<- x+1
-  b <- matrix(c(0), nrow = x, ncol = x)
-  for (i in 1:(x-1)) {
-    for (j in 1:(x-1)) {
-      b[i,j] <- a[i,j]
-    }
-  }
-  vettore_iniziale <- v
-  v[x] <<- readline("Inserisci il vertice da aggiungere: ")
-  if(controllo_lettere(v[x])) {
-    variabile1 <- match(v[x], vettore_iniziale)
-    if(is.na(variabile1)) {
-      colnames(b) <- v
-      rownames(b) <- v
-      for (i in 1:x) {
-        k <- readline(cat("inserisci un arco DA: ", v[i], " A: ", v[x]))
-        b[i,x] <- as.numeric(k)
-      }
-      for (s in 1:(x-1)) {
-        k <- readline(cat("inserisci arco DA: ", v[x], "A: ", v[s]))
-        b[x,s] <- as.numeric(k)
-      }
-      a <<- b
-    } else {
-      print("Il vertice inserito è già presente")
-      x <<- x - 1 
-    }
-    return(a)
-  }
-  else {
-    print("Valore inserito non corretto. Riavvio della funzione...")
-    x <<- x - 1
-    aggiungi_vertice(a)
-  }
-}
-
-rimuovi_vertice <- function(a) {
-  r <- readline("Inserisci il vertice da rimuovere: ")
-  if(check_function(r) == TRUE) {
-    for(i in 1:x) {
-      if(r == v[i]){
-        v <<- v[-c(i)]
-        x <<- x-1
-        a <<- a[-i,-i]
-        break
-      }
-    }
-  }
-  else {
-    print("Il vertice inserito non esiste")
-  }
-  return(a)
-}
-
-vertici_adiacenti <- function(a) {
-  d <- readline("Inserisci un vertice: ")
-  if(check_function(d)) {
-    for (i in 1:x) {
-      old_value <- a[d,d]
-      a[d,d] <- 0
-      if (a[d,i] != 0) {
-        print(v[i])
-      }
-      a[d,d] <- old_value
-    }
-    return(a)
-  }
-  else {
-    print("Il vertice inserito non esiste. ")
-    vertici_adiacenti(a)
-  }
-}
-
-esiste_arco <- function(a) {
-  partenza <- readline("Vertice di partenza: ")
-  arrivo <- readline("Vertice di arrivo: ")
-  if(check_function(partenza) && check_function(arrivo)) {
-    if(a[partenza,arrivo] != 0){
-      print("Esiste un arco")
-    } else {
-      print("Non esiste un arco")
-    }  
-  }
-  else {
-    print("Almeno uno dei vertici inseriti non esiste. ")
-    esiste_arco(a)
-  }
-}
-
-inserisci_arco <- function(a) {
-  partenza <- readline("Inserisci il vertice di partenza: ")
-  arrivo <- readline("Inserisci il vertice di arrivo: ")
-  if(check_function(partenza) && check_function(arrivo)) {
-    if(a[partenza,arrivo] == 0){
-      r <- readline("Inserisci il peso: ")
-      peso <- as.numeric(r)
-      a[partenza,arrivo] <<- peso
-    } else {
-      print("L'arco già esiste")
-    }
-  }
-  else {
-    print("Almeno uno dei vertici inseriti non esiste. ")
-    inserisci_arco(a)
-  }
-}
-
-rimuovi_arco <- function(a) {
-  v1 <- readline("Inserisci il vertice di partenza: ")
-  v2 <- readline("Inserisci il vertice di arrivo: ") 
-  if(check_function(v1) && check_function(v2)) {
-    if(a[v1,v2] != 0) {
-      a[v1,v2] <<- 0
-      cat("Arco da: ", v1, " a: ", v2, " rimosso con successo.")
-    } else {
-      cat("Non esiste un arco da: ", v1, " a: ", v2)
-    }
-  }
-  else {
-    print("Almeno uno dei vertici inseriti non esiste. ") 
-    rimuovi_arco(a)
-  }
-}
-valori_associati_vertici <- function(a) {
-  vec <- c()
-  for (i in 1:x) {
-    cat("Inserire valore associato al vertice", v[i])
-    vec[i] <- readline()
-    vec <<- as.numeric(vec)
-  }
-  return(vec)
-}
-
-valore_associato_arco <- function(a) {
-  arcx <- readline("Inserire il primo vertice: ")
-  arcy <- readline("Inserire il secondo vertice: ") 
-  if(check_function(arcx) && check_function(arcy)) {
-    value <- readline("Inserire il valore da associare: ") 
-    if(is.na(as.numeric(value))) {
-      print("Valore da associare inserito non numerico. ")
-      valore_associato_arco(a)
+library("igraph", lib.loc="~/R/i686-pc-linux-gnu-library/3.2")
+Graph <- setRefClass("Graph", fields = list(a = "matrix"), methods = list(
+  
+  esiste_arco <- function() {
+    partenza <- readline("Vertice di partenza: ")
+    arrivo <- readline("Vertice di arrivo: ")
+    if(check_function(partenza) && check_function(arrivo)) {
+      if(a[partenza,arrivo] != 0){
+        print("Esiste un arco")
+      } else {
+        print("Non esiste un arco")
+      }  
     }
     else {
-      valore <- as.numeric(value)
-      a[arcx, arcy] <<- valore
+      print("Almeno uno dei vertici inseriti non esiste. ")
+      esiste_arco()
+    }
+  },
+  
+  vertici_adiacenti <- function() {
+    d <- readline("Inserisci un vertice: ")
+    if(check_function(d)) {
+      for (i in 1:x) {
+        old_value <- a[d,d]
+        a[d,d] <- 0
+        if (a[d,i] != 0) {
+          print(v[i])
+        }
+        a[d,d] <- old_value
+      }
+    }
+    else {
+      print("Il vertice inserito non esiste. ")
+      vertici_adiacenti()
+    }
+  },
+  
+  aggiungi_vertice <- function() {
+    x <<- x+1
+    b <- matrix(c(0), nrow = x, ncol = x)
+    for (i in 1:(x-1)) {
+      for (j in 1:(x-1)) {
+        b[i,j] <- a[i,j]
+      }
+    }
+    vettore_iniziale <- v
+    v[x] <<- readline("Inserisci il vertice da aggiungere: ")
+    if(controllo_lettere(v[x])) {
+      variabile1 <- match(v[x], vettore_iniziale)
+      if(is.na(variabile1)) {
+        colnames(b) <- v
+        rownames(b) <- v
+        for (i in 1:x) {
+          k <- readline(cat("inserisci un arco DA: ", v[i], " A: ", v[x]))
+          b[i,x] <- as.numeric(k)
+        }
+        for (s in 1:(x-1)) {
+          k <- readline(cat("inserisci arco DA: ", v[x], "A: ", v[s]))
+          b[x,s] <- as.numeric(k)
+        }
+        a <<- b
+      } else {
+        print("Il vertice inserito è già presente")
+        x <<- x - 1 
+      }
+    }
+    else {
+      print("Valore inserito non corretto. Riavvio della funzione...")
+      x <<- x - 1
+      aggiungi_vertice()
+    }
+  },
+  
+  rimuovi_vertice <- function() {
+    r <- readline("Inserisci il vertice da rimuovere: ")
+    if(check_function(r) == TRUE) {
+      for(i in 1:x) {
+        if(r == v[i]){
+          v <<- v[-c(i)]
+          x <<- x-1
+          a <<- a[-i,-i]
+          break
+        }
+      }
+    }
+    else {
+      print("Il vertice inserito non esiste")
+    }
+  },
+  
+  inserisci_arco <- function() {
+    partenza <- readline("Inserisci il vertice di partenza: ")
+    arrivo <- readline("Inserisci il vertice di arrivo: ")
+    if(check_function(partenza) && check_function(arrivo)) {
+      if(a[partenza,arrivo] == 0){
+        r <- readline("Inserisci il peso: ")
+        peso <- as.numeric(r)
+        a[partenza,arrivo] <<- peso
+      } else {
+        print("L'arco già esiste")
+      }
+    }
+    else {
+      print("Almeno uno dei vertici inseriti non esiste. ")
+      inserisci_arco()
+    }
+  },
+  
+  rimuovi_arco <- function() {
+    v1 <- readline("Inserisci il vertice di partenza: ")
+    v2 <- readline("Inserisci il vertice di arrivo: ") 
+    if(check_function(v1) && check_function(v2)) {
+      if(a[v1,v2] != 0) {
+        a[v1,v2] <<- 0
+        cat("Arco da: ", v1, " a: ", v2, " rimosso con successo.")
+      } else {
+        cat("Non esiste un arco da: ", v1, " a: ", v2)
+      }
+    }
+    else {
+      print("Almeno uno dei vertici inseriti non esiste. ") 
+      rimuovi_arco()
+    }
+  },
+  
+  valori_associati_vertici <- function() {
+    vec <- c()
+    for (i in 1:x) {
+      cat("Inserire valore associato al vertice", v[i])
+      vec[i] <- readline()
+      if(controllo_lettere(vec[i]) == TRUE) {
+        print("Valore inserito non numerico. Ritorno al menù iniziale...")
+        break
+      }
+      vec <<- as.numeric(vec)
+    }
+    print(vec)
+  },
+  valore_associato_arco <- function() {
+    arcx <- readline("Inserire il primo vertice: ")
+    arcy <- readline("Inserire il secondo vertice: ") 
+    if(check_function(arcx) && check_function(arcy)) {
+      value <- readline("Inserire il valore da associare: ") 
+      if(controllo_lettere(value) == TRUE) {
+        print("Valore da associare inserito non numerico. ")
+        valore_associato_arco()
+      }
+      else {
+        valore <- as.numeric(value)
+        a[arcx, arcy] <<- valore
+      }
+    }
+    else {
+      print("Almeno uno dei vertici inseriti non esiste. ")
+      valore_associato_arco()
     }
   }
-  else {
-    print("Almeno uno dei vertici inseriti non esiste. ")
-    valore_associato_arco(a)
-  }
-}
+))
 crea_grafo <- function(a) {
   grafo <<- graph_from_adjacency_matrix(adjmatrix = a, mode = c("directed"), weighted = TRUE)
   plot.igraph(grafo)
@@ -499,7 +499,7 @@ dijkstra_algorithm <- function() {
         analisi_vettore <- as.numeric(analisi_vettore)
         vertice_precedente <- c()
         for (i in 1:x) {
-        vertice_precedente[i] <- 0
+          vertice_precedente[i] <- 0
         }
         valore_minimo <- 0
         
@@ -617,6 +617,7 @@ bfs <- function() {
     }
   }
 }
+
 Interprete <- function(a) {
   print("Inserire un comando dalla lista: ")
   print("0 -> Esci dal menù. ")
@@ -645,33 +646,37 @@ Interprete <- function(a) {
   i <- readline()
   i <<- as.numeric(i)
   if(i == 1) {
-    aggiungi_vertice(a)
+    aggiungi_vertice()
+    print(a)
   }
   
   if(i == 2) {
-    rimuovi_vertice(a)
+    rimuovi_vertice()
+    print(a)
   }
   if(i == 3) {
-    vertici_adiacenti(a)
+    vertici_adiacenti()
     print(a)
   }
   if(i == 4) {
-    esiste_arco(a)
+    esiste_arco()
     print(a)
   }
   
   if(i == 5) {
-    inserisci_arco(a)
+    inserisci_arco()
+    print(a)
   }
   if(i == 6) {
-    rimuovi_arco(a)
+    rimuovi_arco()
+    print(a)  
   }
   if(i == 7) {
-    valori_associati_vertici(a)
+    valori_associati_vertici()
     print(a)
   }
   if(i == 8) {
-    valore_associato_arco(a)
+    valore_associato_arco()
     print(a)
   }
   if(i == 9) {
@@ -695,6 +700,7 @@ Interprete <- function(a) {
   }
   if(i == 14) {
     kruskal(a)
+    print(a)
   }
   if(i == 15) {
     start()
@@ -706,13 +712,19 @@ Interprete <- function(a) {
   }
   if(i == 17) {
     dijkstra_algorithm()
+    print(a)
   }
   if(i == 18) {
     bfs()
+    print(a)
   }
 }
-i <- 20
-while(i != 0) {
+
+pre_set()
+start()
+
+j <- 5
+while(j != 0) {
   show_menu <- readline("Vuoi mostrare il menù? y/n \nPremere y per mostrare il menù o n per uscire. \n")
   if (show_menu == "y") {
     Interprete(a)
@@ -720,17 +732,14 @@ while(i != 0) {
   if(show_menu == "n") {
     break
   }
-  if(i == 0) {
+  if(j == 0) {
     print("Vuoi tornare al menù? y/n")
     response <- readline()
     if(response == 'y') {
-      i <- 23
+      j <- 5
     }
     if(response == 'n') {
-      i <- 0
+      j <- 0
     }
   }
 }
-
-
-
